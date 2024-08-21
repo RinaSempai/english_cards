@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#FFBB86FC"
+        android:text="Word"/>
+
+    <TextView
+        android:id="@+id/textViewTranslation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewWord"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="Translation"/>
+
+    <TextView
+        android:id="@+id/textViewUsageExample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTranslation"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="Usage Example"/>
+
+    <TextView
+        android:id="@+id/textViewExampleTranslation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewUsageExample"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="Example Translation"/>
+</RelativeLayout>
