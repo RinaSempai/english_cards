@@ -34,29 +34,42 @@ public class WordDetailActivity extends AppCompatActivity {
 
         wordId = getIntent().getIntExtra("WORD_ID", -1);
 
-        loadWordDetails();
-        loadTranslations();
+        if (wordId != -1) {
+            loadWordDetails();
+            loadTranslations();
+        } else {
+            Toast.makeText(this, "Invalid word ID", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         buttonAddTranslation.setOnClickListener(v -> showAddTranslationDialog());
     }
 
     private void loadWordDetails() {
-        // Fetch the word from the database and set it to textViewWord
-        Cursor cursor = dbHelper.getWords(wordId);
-        if (cursor.moveToFirst()) {
-            String word = cursor.getString(cursor.getColumnIndex("word"));
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT word FROM Words WHERE id = ?", new String[]{String.valueOf(wordId)});
+        if (cursor != null && cursor.moveToFirst()) {
+            String word = cursor.getString(0); // Index 0 because "word" is the first column in this query
             TextView textViewWord = findViewById(R.id.textViewWord);
             textViewWord.setText(word);
+            cursor.close();
+        } else {
+            Toast.makeText(this, "No word details found", Toast.LENGTH_SHORT).show();
         }
-        cursor.close();
     }
 
     private void loadTranslations() {
-        Cursor cursor = dbHelper.getTranslations(wordId);
-        linearLayoutTranslations.removeAllViews();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT Translations.id, Translations.translation, Translations.usage_example, Translations.example_translation FROM Translations WHERE word_id = ?", new String[]{String.valueOf(wordId)});
 
-        if (cursor.moveToFirst()) {
-            do {
+        if (cursor != null) {
+            linearLayoutTranslations.removeAllViews();
+            while (cursor.moveToNext()) {
+                int translationId = cursor.getInt(0);
+                String translation = cursor.getString(1);
+                String usageExample = cursor.getString(2);
+                String exampleTranslation = cursor.getString(3);
+
                 View translationView = LayoutInflater.from(this).inflate(R.layout.item_translation, null);
                 TextView textViewTranslation = translationView.findViewById(R.id.textViewTranslation);
                 TextView textViewUsageExample = translationView.findViewById(R.id.textViewUsageExample);
@@ -64,21 +77,17 @@ public class WordDetailActivity extends AppCompatActivity {
                 Button buttonEdit = translationView.findViewById(R.id.buttonEdit);
                 Button buttonDelete = translationView.findViewById(R.id.buttonDelete);
 
-                String translation = cursor.getString(cursor.getColumnIndex("translation"));
-                String usageExample = cursor.getString(cursor.getColumnIndex("usage_example"));
-                String exampleTranslation = cursor.getString(cursor.getColumnIndex("example_translation"));
-
                 textViewTranslation.setText("Translation: " + translation);
                 textViewUsageExample.setText("Usage Example: " + usageExample);
                 textViewExampleTranslation.setText("Example Translation: " + exampleTranslation);
 
-                buttonEdit.setOnClickListener(v -> showEditTranslationDialog(cursor.getInt(cursor.getColumnIndex("id")), translation, usageExample, exampleTranslation));
-                buttonDelete.setOnClickListener(v -> showDeleteConfirmationDialog(cursor.getInt(cursor.getColumnIndex("id"))));
+                buttonEdit.setOnClickListener(v -> showEditTranslationDialog(translationId, translation, usageExample, exampleTranslation));
+                buttonDelete.setOnClickListener(v -> showDeleteConfirmationDialog(translationId));
 
                 linearLayoutTranslations.addView(translationView);
-            } while (cursor.moveToNext());
+            }
+            cursor.close();
         }
-        cursor.close();
     }
 
     private void showAddTranslationDialog() {
@@ -154,28 +163,15 @@ public class WordDetailActivity extends AppCompatActivity {
         db.execSQL("UPDATE Translations SET translation = ?, usage_example = ?, example_translation = ? WHERE id = ?",
                 new Object[]{translation, usageExample, exampleTranslation, translationId});
         db.close();
-        loadTranslations(); // Перезагрузите список переводов
+        loadTranslations();
         Toast.makeText(this, "Translation updated", Toast.LENGTH_SHORT).show();
     }
 
     private void deleteTranslation(int translationId) {
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getWritableDatabase();
-            int rowsAffected = db.delete("Translations", "id = ?", new String[]{String.valueOf(translationId)});
-            if (rowsAffected > 0) {
-                Toast.makeText(this, "Translation deleted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "No translation found to delete", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error deleting translation", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (db != null) {
-                db.close();
-            }
-        }
-        loadTranslations(); // Reload translations to reflect changes
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM Translations WHERE id = ?", new Object[]{translationId});
+        db.close();
+        loadTranslations();
+        Toast.makeText(this, "Translation deleted", Toast.LENGTH_SHORT).show();
     }
 }
