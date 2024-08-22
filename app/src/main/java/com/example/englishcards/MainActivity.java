@@ -3,13 +3,14 @@ package com.example.englishcards;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,8 +24,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dbHelper = new DatabaseHelper(this);
-        listViewLevels = findViewById(R.id.listViewLevels);
 
+        try {
+            dbHelper.createDatabase();
+            dbHelper.openDatabase();
+        } catch (IOException e) {
+            throw new Error("Unable to create database");
+        }
+
+        listViewLevels = findViewById(R.id.listViewLevels);
         loadLevels();
     }
 
@@ -44,14 +52,11 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, levels);
         listViewLevels.setAdapter(adapter);
 
-        listViewLevels.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int levelId = levelIds.get(position);
-                Intent intent = new Intent(MainActivity.this, LevelActivity.class);
-                intent.putExtra("LEVEL_ID", levelId);
-                startActivity(intent);
-            }
+        listViewLevels.setOnItemClickListener((parent, view, position, id) -> {
+            int levelId = levelIds.get(position);
+            Intent intent = new Intent(MainActivity.this, LevelActivity.class);
+            intent.putExtra("LEVEL_ID", levelId);
+            startActivity(intent);
         });
     }
 }

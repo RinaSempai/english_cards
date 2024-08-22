@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public class WordDetailActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
-
-    private TextView textViewWord;
     private TextView textViewTranslation;
     private TextView textViewUsageExample;
     private TextView textViewExampleTranslation;
@@ -21,7 +19,6 @@ public class WordDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_word_detail);
 
         dbHelper = new DatabaseHelper(this);
-        textViewWord = findViewById(R.id.textViewWord);
         textViewTranslation = findViewById(R.id.textViewTranslation);
         textViewUsageExample = findViewById(R.id.textViewUsageExample);
         textViewExampleTranslation = findViewById(R.id.textViewExampleTranslation);
@@ -34,15 +31,13 @@ public class WordDetailActivity extends AppCompatActivity {
         Cursor cursor = dbHelper.getTranslations(wordId);
 
         if (cursor.moveToFirst()) {
-            String word = cursor.getString(cursor.getColumnIndex("Words.word"));
-            String translation = cursor.getString(cursor.getColumnIndex("Translations.translation"));
-            String usageExample = cursor.getString(cursor.getColumnIndex("Translations.usage_example"));
-            String exampleTranslation = cursor.getString(cursor.getColumnIndex("Translations.example_translation"));
+            String translation = cursor.getString(cursor.getColumnIndex("translation"));
+            String usageExample = cursor.getString(cursor.getColumnIndex("usage_example"));
+            String exampleTranslation = cursor.getString(cursor.getColumnIndex("example_translation"));
 
-            textViewWord.setText(word);
-            textViewTranslation.setText("Перевод: " + translation);
-            textViewUsageExample.setText("Пример использования: " + usageExample);
-            textViewExampleTranslation.setText("Перевод примера: " + exampleTranslation);
+            textViewTranslation.setText("Translation: " + translation);
+            textViewUsageExample.setText("Usage Example: " + usageExample);
+            textViewExampleTranslation.setText("Example Translation: " + exampleTranslation);
         }
         cursor.close();
     }

@@ -5,22 +5,10 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textViewWord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#FFBB86FC"
-        android:text="Word"/>
-
-    <TextView
         android:id="@+id/textViewTranslation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewWord"
-        android:layout_marginTop="16dp"
         android:textSize="18sp"
-        android:textColor="@color/white"
         android:text="Translation"/>
 
     <TextView
@@ -30,7 +18,6 @@
         android:layout_below="@id/textViewTranslation"
         android:layout_marginTop="16dp"
         android:textSize="18sp"
-        android:textColor="@color/white"
         android:text="Usage Example"/>
 
     <TextView
@@ -40,6 +27,5 @@
         android:layout_below="@id/textViewUsageExample"
         android:layout_marginTop="16dp"
         android:textSize="18sp"
-        android:textColor="@color/white"
         android:text="Example Translation"/>
 </RelativeLayout>
