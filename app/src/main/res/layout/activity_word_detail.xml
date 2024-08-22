@@ -5,27 +5,30 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textViewTranslation"
+        android:id="@+id/textViewWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Translation"/>
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Word"/>
 
-    <TextView
-        android:id="@+id/textViewUsageExample"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayoutTranslations"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewTranslation"
+        android:layout_below="@id/textViewWord"
         android:layout_marginTop="16dp"
-        android:textSize="18sp"
-        android:text="Usage Example"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewExampleTranslation"
+        <!-- Placeholder for translations -->
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonAddTranslation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewUsageExample"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp"
-        android:text="Example Translation"/>
+        android:text="Add Translation"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"/>
 </RelativeLayout>

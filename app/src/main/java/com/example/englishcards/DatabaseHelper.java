@@ -1,5 +1,6 @@
 package com.example.englishcards;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -106,4 +107,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT Words.word, Translations.translation, Translations.usage_example, Translations.example_translation FROM Words LEFT JOIN Translations ON Words.id = Translations.word_id WHERE Words.id = ?", new String[]{String.valueOf(wordId)});
     }
+
+    public void addTranslation(int wordId, String translation, String usageExample, String exampleTranslation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO Translations (word_id, translation, usage_example, example_translation) VALUES (?, ?, ?, ?)",
+                new Object[]{wordId, translation, usageExample, exampleTranslation});
+        db.close();
+    }
+
+    public void updateTranslation(int translationId, String translation, String usageExample, String exampleTranslation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE Translations SET translation = ?, usage_example = ?, example_translation = ? WHERE id = ?",
+                new Object[]{translation, usageExample, exampleTranslation, translationId});
+        db.close();
+    }
+
+    public void deleteTranslation(int translationId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM Translations WHERE id = ?", new Object[]{translationId});
+        db.close();
+    }
+
 }
