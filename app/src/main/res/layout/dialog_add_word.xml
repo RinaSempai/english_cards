@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Spinner
+        android:id="@+id/spinnerLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/editTextWord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Word"/>
+
+    <EditText
+        android:id="@+id/editTextUsageExample"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Usage Example"/>
+
+    <EditText
+        android:id="@+id/editTextExampleTranslation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Example Translation"/>
+</LinearLayout>

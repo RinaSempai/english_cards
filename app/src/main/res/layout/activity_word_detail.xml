@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
+    <!-- Скролируемый контейнер -->
+    <ScrollView
+        android:id="@+id/scrollViewTranslations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonAddTranslation"
+        android:layout_below="@+id/textViewWord"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutTranslations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <!-- Заголовок слова -->
     <TextView
         android:id="@+id/textViewWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:text="Word"/>
+        android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutTranslations"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewWord"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <!-- Placeholder for translations -->
-    </LinearLayout>
-
+    <!-- Кнопка добавления перевода -->
     <Button
         android:id="@+id/buttonAddTranslation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Translation"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="16dp"/>
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:text="Add Translation" />
+
 </RelativeLayout>

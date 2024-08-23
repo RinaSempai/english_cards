@@ -128,4 +128,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addWord(int levelId, String word, String usageExample, String exampleTranslation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("level_id", levelId);
+        values.put("word", word);
+        long wordId = db.insert("Words", null, values);
+
+        if (wordId != -1) {
+            ContentValues translationValues = new ContentValues();
+            translationValues.put("word_id", wordId);
+            translationValues.put("translation", word);
+            translationValues.put("usage_example", usageExample);
+            translationValues.put("example_translation", exampleTranslation);
+            db.insert("Translations", null, translationValues);
+        }
+
+        db.close();
+    }
 }
