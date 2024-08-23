@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <Spinner
-        android:id="@+id/spinnerLevel"
+        android:id="@+id/spinnerLevels"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -14,17 +14,24 @@
         android:id="@+id/editTextWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Word"/>
+        android:hint="English Word"/>
 
     <EditText
-        android:id="@+id/editTextUsageExample"
+        android:id="@+id/editTextTranslation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Usage Example"/>
+        android:hint="Translation"/>
+
+    <EditText
+        android:id="@+id/editTextExample"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Example Sentence"/>
 
     <EditText
         android:id="@+id/editTextExampleTranslation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Example Translation"/>
+        android:hint="Example Translation"/>
+
 </LinearLayout>

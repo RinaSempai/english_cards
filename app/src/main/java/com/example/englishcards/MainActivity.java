@@ -76,9 +76,10 @@ public class MainActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.dialog_add_word, null);
         builder.setView(dialogView);
 
-        Spinner spinnerLevel = dialogView.findViewById(R.id.spinnerLevel);
+        Spinner spinnerLevel = dialogView.findViewById(R.id.spinnerLevels);
         EditText editTextWord = dialogView.findViewById(R.id.editTextWord);
-        EditText editTextUsageExample = dialogView.findViewById(R.id.editTextUsageExample);
+        EditText editTextTranslation = dialogView.findViewById(R.id.editTextTranslation);
+        EditText editTextUsageExample = dialogView.findViewById(R.id.editTextExample);
         EditText editTextExampleTranslation = dialogView.findViewById(R.id.editTextExampleTranslation);
 
         // Load levels into spinner
@@ -102,14 +103,15 @@ public class MainActivity extends AppCompatActivity {
             int selectedLevelPosition = spinnerLevel.getSelectedItemPosition();
             int selectedLevelId = levelIds.get(selectedLevelPosition);
             String word = editTextWord.getText().toString();
+            String translation = editTextTranslation.getText().toString();
             String usageExample = editTextUsageExample.getText().toString();
             String exampleTranslation = editTextExampleTranslation.getText().toString();
 
-            if (word.isEmpty() || usageExample.isEmpty() || exampleTranslation.isEmpty()) {
+            if (word.isEmpty() || translation.isEmpty()|| usageExample.isEmpty() || exampleTranslation.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             } else {
                 // Save word and translation to database
-                dbHelper.addWord(selectedLevelId, word, usageExample, exampleTranslation);
+                dbHelper.addWord(selectedLevelId, word, translation, usageExample, exampleTranslation);
                 Toast.makeText(MainActivity.this, "Word added successfully", Toast.LENGTH_SHORT).show();
             }
         });

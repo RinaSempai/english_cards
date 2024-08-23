@@ -128,7 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addWord(int levelId, String word, String usageExample, String exampleTranslation) {
+    public void addWord(int levelId, String word, String translation, String usageExample, String exampleTranslation) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("level_id", levelId);
@@ -138,12 +138,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (wordId != -1) {
             ContentValues translationValues = new ContentValues();
             translationValues.put("word_id", wordId);
-            translationValues.put("translation", word);
+            translationValues.put("translation", translation);
             translationValues.put("usage_example", usageExample);
             translationValues.put("example_translation", exampleTranslation);
             db.insert("Translations", null, translationValues);
         }
 
         db.close();
+    }
+
+    public boolean isWordKnown(int wordId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT knows FROM UserWordStatus WHERE word_id = ?", new String[]{String.valueOf(wordId)});
+        boolean isKnown = false;
+        if (cursor.moveToFirst()) {
+            isKnown = cursor.getInt(cursor.getColumnIndex("knows")) == 1;
+        }
+        cursor.close();
+        return isKnown;
+    }
+
+    public void updateWordStatus(int wordId, boolean knows) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO UserWordStatus (user_id, word_id, knows) VALUES (?, ?, ?) ON CONFLICT(user_id, word_id) DO UPDATE SET knows = excluded.knows",
+                new Object[]{1, wordId, knows ? 1 : 0});
     }
 }
