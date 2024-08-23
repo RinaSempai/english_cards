@@ -31,6 +31,7 @@ public class WordDetailActivity extends AppCompatActivity {
         TextView textViewWord = findViewById(R.id.textViewWord);
         linearLayoutTranslations = findViewById(R.id.linearLayoutTranslations);
         Button buttonAddTranslation = findViewById(R.id.buttonAddTranslation);
+        Button buttonDeleteWord = findViewById(R.id.buttonDeleteWord);
 
         wordId = getIntent().getIntExtra("WORD_ID", -1);
 
@@ -43,6 +44,31 @@ public class WordDetailActivity extends AppCompatActivity {
         }
 
         buttonAddTranslation.setOnClickListener(v -> showAddTranslationDialog());
+        buttonDeleteWord.setOnClickListener(v -> showDeleteWordConfirmationDialog());
+    }
+
+    private void showDeleteWordConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Word")
+                .setMessage("Are you sure you want to delete this word and all its translations?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteWord())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteWord() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Удаляем все переводы для этого слова
+        db.execSQL("DELETE FROM Translations WHERE word_id = ?", new Object[]{wordId});
+
+        // Удаляем само слово
+        db.execSQL("DELETE FROM Words WHERE id = ?", new Object[]{wordId});
+
+        db.close();
+
+        Toast.makeText(this, "Word and its translations deleted", Toast.LENGTH_SHORT).show();
+        finish(); // Закрыть текущую активность после удаления слова
     }
 
     private void loadWordDetails() {

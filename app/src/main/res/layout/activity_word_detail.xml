@@ -40,4 +40,15 @@
         android:layout_margin="16dp"
         android:text="Add Translation" />
 
+    <!-- Кнопка удаления слова -->
+    <Button
+        android:id="@+id/buttonDeleteWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:text="Delete Word"
+        android:textColor="@android:color/holo_red_dark" />
+
 </RelativeLayout>

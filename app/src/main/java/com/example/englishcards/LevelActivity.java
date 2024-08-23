@@ -26,6 +26,13 @@ public class LevelActivity extends AppCompatActivity {
         loadWords(levelId);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int levelId = getIntent().getIntExtra("LEVEL_ID", -1);
+        loadWords(levelId); // Обновляем список слов
+    }
+
     private void loadWords(int levelId) {
         Cursor cursor = dbHelper.getWords(levelId);
         ArrayList<WordItem> words = new ArrayList<>();
