@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00:00"
+        android:textSize="24sp"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/textViewQuestionsCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Questions: 0"
+        android:textSize="18sp"
+        android:layout_below="@id/textViewTimer"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:layout_below="@id/textViewQuestionsCount"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewWordTranslation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:layout_below="@id/textViewFeedback"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/editTextUserAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter the word"
+        android:layout_below="@id/textViewWordTranslation"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/buttonCheckAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check Answer"
+        android:layout_below="@id/editTextUserAnswer"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/buttonNextWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_below="@id/buttonCheckAnswer"
+        android:layout_marginTop="16dp"/>
+</RelativeLayout>

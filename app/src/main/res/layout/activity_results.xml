@@ -1,28 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <ListView
-        android:id="@+id/listViewLevels"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/buttonAddWord"/>
-
-    <Button
-        android:id="@+id/buttonAddWord"
+    <TextView
+        android:id="@+id/textViewResultSummary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Word"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp"/>
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
     <Button
-        android:id="@+id/buttonStartLearning"
+        android:id="@+id/buttonFinish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Learning"
+        android:text="Finish"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"/>

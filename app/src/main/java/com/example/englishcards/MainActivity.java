@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private ListView listViewLevels;
     private Button buttonAddWord;
+    private Button buttonStartLearning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
         listViewLevels = findViewById(R.id.listViewLevels);
         buttonAddWord = findViewById(R.id.buttonAddWord);
+        buttonStartLearning = findViewById(R.id.buttonStartLearning);
+
         loadLevels();
 
         buttonAddWord.setOnClickListener(v -> showAddWordDialog());
+        buttonStartLearning.setOnClickListener(v -> showStartLearningDialog());
     }
 
     private void loadLevels() {
@@ -82,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         EditText editTextUsageExample = dialogView.findViewById(R.id.editTextExample);
         EditText editTextExampleTranslation = dialogView.findViewById(R.id.editTextExampleTranslation);
 
-        // Load levels into spinner
         Cursor cursor = dbHelper.getLevels();
         ArrayList<String> levels = new ArrayList<>();
         ArrayList<Integer> levelIds = new ArrayList<>();
@@ -107,13 +110,65 @@ public class MainActivity extends AppCompatActivity {
             String usageExample = editTextUsageExample.getText().toString();
             String exampleTranslation = editTextExampleTranslation.getText().toString();
 
-            if (word.isEmpty() || translation.isEmpty()|| usageExample.isEmpty() || exampleTranslation.isEmpty()) {
+            if (word.isEmpty() || translation.isEmpty() || usageExample.isEmpty() || exampleTranslation.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             } else {
-                // Save word and translation to database
                 dbHelper.addWord(selectedLevelId, word, translation, usageExample, exampleTranslation);
                 Toast.makeText(MainActivity.this, "Word added successfully", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showStartLearningDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_start_learning, null);
+        builder.setView(dialogView);
+
+        Spinner spinnerLevel = dialogView.findViewById(R.id.spinnerLevel);
+        Spinner spinnerWordsType = dialogView.findViewById(R.id.spinnerWordsType);
+        Spinner spinnerNumberOfWords = dialogView.findViewById(R.id.spinnerNumberOfWords);
+
+        Cursor cursor = dbHelper.getLevels();
+        ArrayList<String> levels = new ArrayList<>();
+        ArrayList<Integer> levelIds = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                levels.add(cursor.getString(cursor.getColumnIndex("name")));
+                levelIds.add(cursor.getInt(cursor.getColumnIndex("id")));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, levels);
+        levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLevel.setAdapter(levelAdapter);
+
+        ArrayAdapter<String> wordsTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"All Words", "Unknown Words"});
+        wordsTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerWordsType.setAdapter(wordsTypeAdapter);
+
+        ArrayAdapter<String> numberOfWordsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"10", "20", "30", "50"});
+        numberOfWordsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerNumberOfWords.setAdapter(numberOfWordsAdapter);
+
+        builder.setPositiveButton("Start", (dialog, which) -> {
+            int selectedLevelPosition = spinnerLevel.getSelectedItemPosition();
+            int selectedLevelId = levelIds.get(selectedLevelPosition);
+            String wordsType = spinnerWordsType.getSelectedItem().toString();
+            int numberOfWords = Integer.parseInt(spinnerNumberOfWords.getSelectedItem().toString());
+
+            Intent intent = new Intent(MainActivity.this, LearningActivity.class);
+            intent.putExtra("LEVEL_ID", selectedLevelId);
+            intent.putExtra("WORDS_TYPE", wordsType);
+            intent.putExtra("NUMBER_OF_WORDS", numberOfWords);
+            startActivity(intent);
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());

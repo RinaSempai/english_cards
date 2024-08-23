@@ -103,31 +103,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM Words WHERE level_id = ?", new String[]{String.valueOf(levelId)});
     }
 
-    public Cursor getTranslations(int wordId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT Words.word, Translations.translation, Translations.usage_example, Translations.example_translation FROM Words LEFT JOIN Translations ON Words.id = Translations.word_id WHERE Words.id = ?", new String[]{String.valueOf(wordId)});
-    }
-
-    public void addTranslation(int wordId, String translation, String usageExample, String exampleTranslation) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO Translations (word_id, translation, usage_example, example_translation) VALUES (?, ?, ?, ?)",
-                new Object[]{wordId, translation, usageExample, exampleTranslation});
-        db.close();
-    }
-
-    public void updateTranslation(int translationId, String translation, String usageExample, String exampleTranslation) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE Translations SET translation = ?, usage_example = ?, example_translation = ? WHERE id = ?",
-                new Object[]{translation, usageExample, exampleTranslation, translationId});
-        db.close();
-    }
-
-    public void deleteTranslation(int translationId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM Translations WHERE id = ?", new Object[]{translationId});
-        db.close();
-    }
-
     public void addWord(int levelId, String word, String translation, String usageExample, String exampleTranslation) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -162,5 +137,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO UserWordStatus (user_id, word_id, knows) VALUES (?, ?, ?) ON CONFLICT(user_id, word_id) DO UPDATE SET knows = excluded.knows",
                 new Object[]{1, wordId, knows ? 1 : 0});
+    }
+
+    public Cursor getWordTranslations(int wordId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM Translations WHERE word_id = ?", new String[]{String.valueOf(wordId)});
     }
 }
