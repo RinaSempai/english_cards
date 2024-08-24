@@ -143,4 +143,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM Translations WHERE word_id = ?", new String[]{String.valueOf(wordId)});
     }
+
+    public Cursor searchWords(String query) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        query = "%" + query.toLowerCase() + "%";
+        return db.rawQuery("SELECT w.word, t.translation, l.name AS level, t.usage_example, t.example_translation " +
+                "FROM Words w " +
+                "JOIN Translations t ON w.id = t.word_id " +
+                "JOIN Levels l ON w.level_id = l.id " +
+                "WHERE LOWER(w.word) LIKE ? OR LOWER(t.translation) LIKE ?", new String[]{query, query});
+    }
+
+    public void addLevel(String levelName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO Levels (name) VALUES (?)", new Object[]{levelName});
+    }
+
+    public void deleteLevel(int levelId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("Levels", "id = ?", new String[]{String.valueOf(levelId)});
+    }
 }

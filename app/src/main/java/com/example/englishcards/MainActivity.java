@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView listViewLevels;
     private Button buttonAddWord;
     private Button buttonStartLearning;
+    private Button buttonSearchWord;
+    private Button buttonAddLevel;
+    private Button buttonDeleteLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,88 @@ public class MainActivity extends AppCompatActivity {
 
         buttonAddWord.setOnClickListener(v -> showAddWordDialog());
         buttonStartLearning.setOnClickListener(v -> showStartLearningDialog());
+
+        buttonSearchWord = findViewById(R.id.buttonSearchWord);
+
+        buttonSearchWord.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(intent);
+        });
+
+        buttonAddLevel = findViewById(R.id.buttonAddLevel);
+
+        buttonAddLevel.setOnClickListener(v -> showAddLevelDialog());
+
+        buttonDeleteLevel = findViewById(R.id.buttonDeleteLevel);
+        buttonDeleteLevel.setOnClickListener(v -> showDeleteLevelDialog());
     }
+
+    private void showDeleteLevelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Level");
+
+        // Get levels from the database
+        Cursor cursor = dbHelper.getLevels();
+        ArrayList<String> levels = new ArrayList<>();
+        ArrayList<Integer> levelIds = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                levels.add(cursor.getString(cursor.getColumnIndex("name")));
+                levelIds.add(cursor.getInt(cursor.getColumnIndex("id")));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // Create an adapter for the levels
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, levels);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        final Spinner spinnerLevels = new Spinner(this);
+        spinnerLevels.setAdapter(adapter);
+
+        builder.setView(spinnerLevels);
+
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            int selectedLevelPosition = spinnerLevels.getSelectedItemPosition();
+            int selectedLevelId = levelIds.get(selectedLevelPosition);
+
+            dbHelper.deleteLevel(selectedLevelId);
+            Toast.makeText(MainActivity.this, "Level deleted", Toast.LENGTH_SHORT).show();
+            loadLevels();  // Refresh the levels list after deletion
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showAddLevelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add New Level");
+
+        final EditText input = new EditText(this);
+        input.setHint("Enter level name");
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String levelName = input.getText().toString().trim();
+            if (levelName.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please enter a level name", Toast.LENGTH_SHORT).show();
+            } else {
+                dbHelper.addLevel(levelName);
+                Toast.makeText(MainActivity.this, "Level added successfully", Toast.LENGTH_SHORT).show();
+                loadLevels();  // Refresh the list of levels
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
     private void loadLevels() {
         Cursor cursor = dbHelper.getLevels();
