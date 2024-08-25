@@ -1,11 +1,14 @@
 package com.example.englishcards;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +26,11 @@ public class MemoryGameActivity extends AppCompatActivity {
     private boolean isFlipping;
     private int matchesFound;
     private GridLayout gridLayout;
+    private int levelId;
+    private TextView timerTextView;
+    private long startTime;
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +39,36 @@ public class MemoryGameActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
         gridLayout = findViewById(R.id.gridLayout);
+        timerTextView = findViewById(R.id.timerTextView); // Add this in your XML
+        levelId = getIntent().getIntExtra("LEVEL_ID", -1);
+
+        startTime = SystemClock.elapsedRealtime(); // Start the timer
 
         loadWords();
         setupCards();
+
+        // Setup timer runnable
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long elapsedMillis = SystemClock.elapsedRealtime() - startTime;
+                int seconds = (int) (elapsedMillis / 1000);
+                timerTextView.setText(String.format("%02d:%02d", seconds / 60, seconds % 60));
+                timerHandler.postDelayed(this, 1000);
+            }
+        };
+        timerHandler.post(timerRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timerHandler.removeCallbacks(timerRunnable); // Stop timer when activity is destroyed
     }
 
     private void loadWords() {
         cards = new ArrayList<>();
-        Cursor cursor = dbHelper.getRandomWords(15); // Ensure this fetches 15 unique pairs
+        Cursor cursor = dbHelper.getRandomWords(levelId, 9); // Ensure this fetches 9 unique pairs
         if (cursor.moveToFirst()) {
             do {
                 String word = cursor.getString(cursor.getColumnIndex("word"));
@@ -53,8 +83,8 @@ public class MemoryGameActivity extends AppCompatActivity {
 
     private void setupCards() {
         int totalCards = cards.size();
-        gridLayout.setColumnCount(5);
-        gridLayout.setRowCount(3);
+        gridLayout.setColumnCount(3);
+        gridLayout.setRowCount(6);
 
         for (int i = 0; i < totalCards; i++) {
             final int index = i;
@@ -92,7 +122,10 @@ public class MemoryGameActivity extends AppCompatActivity {
                 firstButton.setVisibility(View.INVISIBLE);
                 secondButton.setVisibility(View.INVISIBLE);
                 if (matchesFound == cards.size() / 2) {
-                    Toast.makeText(this, "You won!", Toast.LENGTH_SHORT).show();
+                    timerHandler.removeCallbacks(timerRunnable);
+                    Intent resultIntent = new Intent(MemoryGameActivity.this, GameResultActivity.class);
+                    resultIntent.putExtra("TIME_ELAPSED", SystemClock.elapsedRealtime() - startTime);
+                    startActivity(resultIntent);
                 }
                 resetFlipping();
             }, 1000); // Delay to show the second card flip before hiding

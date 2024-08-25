@@ -67,10 +67,48 @@ public class MainActivity extends AppCompatActivity {
         buttonDeleteLevel.setOnClickListener(v -> showDeleteLevelDialog());
 
         Button buttonMemoryGame = findViewById(R.id.buttonMemoryGame);
-        buttonMemoryGame.setOnClickListener(v -> {
+        buttonMemoryGame.setOnClickListener(v -> showSelectLevelForMemoryGameDialog());
+    }
+
+    private void showSelectLevelForMemoryGameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Level for Memory Game");
+
+        // Get levels from the database
+        Cursor cursor = dbHelper.getLevels();
+        ArrayList<String> levels = new ArrayList<>();
+        ArrayList<Integer> levelIds = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                levels.add(cursor.getString(cursor.getColumnIndex("name")));
+                levelIds.add(cursor.getInt(cursor.getColumnIndex("id")));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // Create an adapter for the levels
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, levels);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        final Spinner spinnerLevels = new Spinner(this);
+        spinnerLevels.setAdapter(adapter);
+
+        builder.setView(spinnerLevels);
+
+        builder.setPositiveButton("Start", (dialog, which) -> {
+            int selectedLevelPosition = spinnerLevels.getSelectedItemPosition();
+            int selectedLevelId = levelIds.get(selectedLevelPosition);
+
             Intent intent = new Intent(MainActivity.this, MemoryGameActivity.class);
+            intent.putExtra("LEVEL_ID", selectedLevelId);
             startActivity(intent);
         });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void showDeleteLevelDialog() {
