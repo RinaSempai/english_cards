@@ -163,4 +163,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("Levels", "id = ?", new String[]{String.valueOf(levelId)});
     }
+
+    public Cursor getRandomWords(int limit) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT w.word, t.translation FROM Words w JOIN Translations t ON w.id = t.word_id ORDER BY RANDOM() LIMIT ?", new String[]{String.valueOf(limit)});
+    }
 }

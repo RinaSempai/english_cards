@@ -29,5 +29,6 @@
         <activity android:name=".LearningActivity" />
         <activity android:name=".ResultsActivity" />
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".MemoryGameActivity" />
     </application>
 </manifest>

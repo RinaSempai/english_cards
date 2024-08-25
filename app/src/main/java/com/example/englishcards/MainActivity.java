@@ -65,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
 
         buttonDeleteLevel = findViewById(R.id.buttonDeleteLevel);
         buttonDeleteLevel.setOnClickListener(v -> showDeleteLevelDialog());
+
+        Button buttonMemoryGame = findViewById(R.id.buttonMemoryGame);
+        buttonMemoryGame.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MemoryGameActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void showDeleteLevelDialog() {
