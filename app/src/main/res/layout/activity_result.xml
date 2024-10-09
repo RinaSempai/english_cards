@@ -9,13 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
-        android:text="Result" />
+        android:text="Результат" />
 
     <Button
         android:id="@+id/finishButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Finish"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:backgroundTint="#2196F3"
+        android:text="Вернуться на главный экран" />
 </RelativeLayout>

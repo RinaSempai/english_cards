@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.englishcards"
+    namespace = "com.example.englishidioms"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.englishcards"
+        applicationId = "com.example.englishtraining"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

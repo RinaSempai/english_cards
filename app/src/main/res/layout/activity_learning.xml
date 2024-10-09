@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +15,7 @@
         android:id="@+id/textViewQuestionsCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Questions: 0"
+        android:text="Вопрос №: 0"
         android:textSize="18sp"
         android:layout_below="@id/textViewTimer"
         android:layout_marginTop="8dp"/>
@@ -39,11 +38,26 @@
         android:layout_below="@id/textViewFeedback"
         android:layout_marginTop="16dp"/>
 
+    <ImageButton
+        android:id="@+id/buttonPlayAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/textViewFeedback"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/baseline_volume_up_24"
+        android:background="?attr/selectableItemBackground"
+        android:padding="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:scaleType="centerInside" />
+
+
     <EditText
         android:id="@+id/editTextUserAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter the word"
+        android:hint="Введите перевод"
         android:layout_below="@id/textViewWordTranslation"
         android:layout_marginTop="16dp"/>
 
@@ -51,15 +65,17 @@
         android:id="@+id/buttonCheckAnswer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Check Answer"
         android:layout_below="@id/editTextUserAnswer"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#3F51B5"
+        android:text="Проверить" />
 
     <Button
         android:id="@+id/buttonNextWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
         android:layout_below="@id/buttonCheckAnswer"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Дальше" />
 </RelativeLayout>

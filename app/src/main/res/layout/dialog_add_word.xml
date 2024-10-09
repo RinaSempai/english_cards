@@ -14,24 +14,24 @@
         android:id="@+id/editTextWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="English Word"/>
+        android:hint="Слово на английском"/>
 
     <EditText
         android:id="@+id/editTextTranslation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Translation"/>
+        android:hint="Перевод"/>
 
     <EditText
         android:id="@+id/editTextExample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Example Sentence"/>
+        android:hint="Пример использования"/>
 
     <EditText
         android:id="@+id/editTextExampleTranslation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Example Translation"/>
+        android:hint="Перевод примера предложения"/>
 
 </LinearLayout>

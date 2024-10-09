@@ -9,17 +9,17 @@
         android:id="@+id/editTextTranslation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Translation"/>
+        android:hint="Перевод"/>
 
     <EditText
         android:id="@+id/editTextUsageExample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Usage Example"/>
+        android:hint="Пример испльзования"/>
 
     <EditText
         android:id="@+id/editTextExampleTranslation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Example Translation"/>
+        android:hint="Перевод примера использования"/>
 </LinearLayout>

@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "English cards"
+rootProject.name = "English Training"
 include(":app")
  

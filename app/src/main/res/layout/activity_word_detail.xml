@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -30,25 +31,38 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <ImageButton
+        android:id="@+id/buttonPlayAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/baseline_volume_up_24"
+        android:background="?attr/selectableItemBackground"
+        android:layout_marginTop="4sp"
+        android:padding="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:scaleType="centerInside" />
+
     <!-- Кнопка добавления перевода -->
     <Button
         android:id="@+id/buttonAddTranslation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:text="Add Translation" />
+        android:backgroundTint="#4CAF50"
+        android:text="Добавить перевод" />
 
     <!-- Кнопка удаления слова -->
     <Button
         android:id="@+id/buttonDeleteWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:text="Delete Word"
-        android:textColor="@android:color/holo_red_dark" />
-
+        android:backgroundTint="#F00A0A"
+        android:text="Удалить слово" />
 </RelativeLayout>

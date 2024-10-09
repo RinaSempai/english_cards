@@ -24,7 +24,5 @@
         android:columnCount="3">
 
         <!-- Card Buttons will be added here programmatically -->
-
     </GridLayout>
-
 </LinearLayout>
