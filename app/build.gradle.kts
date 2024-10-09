@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.englishidioms"
+    namespace = "com.example.englishtraining"
     compileSdk = 34
 
     defaultConfig {
