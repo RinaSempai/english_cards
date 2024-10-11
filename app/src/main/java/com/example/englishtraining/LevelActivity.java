@@ -2,7 +2,10 @@ package com.example.englishtraining;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +16,8 @@ public class LevelActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private ListView listViewWords;
     private int savedScrollPosition = 0;  // Переменная для хранения позиции прокрутки
+    private ArrayList<WordItem> words; // Список слов для дальнейшего использования
+    private WordAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +26,14 @@ public class LevelActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
         listViewWords = findViewById(R.id.listViewWords);
+        Button buttonMarkUnknown = findViewById(R.id.buttonMarkUnknown);
+        Button buttonMarkKnown = findViewById(R.id.buttonMarkKnown);
 
         int levelId = getIntent().getIntExtra("LEVEL_ID", -1);
         loadWords(levelId);
+
+        buttonMarkUnknown.setOnClickListener(v -> markWordsAsUnknown());
+        buttonMarkKnown.setOnClickListener(v -> markWordsAsKnown());
 
         if (savedInstanceState != null) {
             savedScrollPosition = savedInstanceState.getInt("scroll_position", 0);
@@ -50,7 +60,7 @@ public class LevelActivity extends AppCompatActivity {
 
     private void loadWords(int levelId) {
         Cursor cursor = dbHelper.getWords(levelId);
-        ArrayList<WordItem> words = new ArrayList<>();
+        words = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
@@ -62,11 +72,32 @@ public class LevelActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        WordAdapter adapter = new WordAdapter(this, words, dbHelper);
+        adapter = new WordAdapter(this, words, dbHelper);
         listViewWords.setAdapter(adapter);
 
         // Восстанавливаем позицию списка после загрузки данных
         listViewWords.setSelection(savedScrollPosition);
     }
-}
 
+    private void markWordsAsUnknown() {
+        for (WordItem wordItem : words) {
+            if (wordItem.isKnown()) {
+                dbHelper.updateWordStatus(wordItem.getWordId(), false);
+                wordItem.setKnown(false);
+            }
+        }
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "Отмечены как неизвестные", Toast.LENGTH_SHORT).show();
+    }
+
+    private void markWordsAsKnown() {
+        for (WordItem wordItem : words) {
+            if (!wordItem.isKnown()) {
+                dbHelper.updateWordStatus(wordItem.getWordId(), true);
+                wordItem.setKnown(true);
+            }
+        }
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "Отмечены как известные", Toast.LENGTH_SHORT).show();
+    }
+}

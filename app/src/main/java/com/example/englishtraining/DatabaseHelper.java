@@ -48,6 +48,120 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void updateDatabase() {
+        SQLiteDatabase localDb = this.getWritableDatabase();
+
+        // Загрузите новую базу данных (из assets или другого источника) во временную базу данных
+        String tempDatabasePath = DATABASE_PATH + "temp_" + DATABASE_NAME;
+        try {
+            copyDatabaseToTemp(tempDatabasePath);
+            SQLiteDatabase tempDb = SQLiteDatabase.openDatabase(tempDatabasePath, null, SQLiteDatabase.OPEN_READONLY);
+
+            // Получение всех новых строк из таблицы Levels
+            Cursor newLevelsCursor = tempDb.rawQuery("SELECT * FROM Levels", null);
+            while (newLevelsCursor.moveToNext()) {
+                int id = newLevelsCursor.getInt(newLevelsCursor.getColumnIndex("id"));
+                String name = newLevelsCursor.getString(newLevelsCursor.getColumnIndex("name"));
+
+                // Проверка, существует ли уже уровень
+                Cursor existingLevelCursor = localDb.rawQuery("SELECT * FROM Levels WHERE id = ?", new String[]{String.valueOf(id)});
+                if (existingLevelCursor.getCount() == 0) {
+                    // Если уровня нет, добавляем его
+                    ContentValues values = new ContentValues();
+                    values.put("id", id);
+                    values.put("name", name);
+                    localDb.insert("Levels", null, values);
+                }
+                existingLevelCursor.close();
+            }
+            newLevelsCursor.close();
+
+            // Обновление других таблиц
+            updateTableFromTemp(localDb, tempDb, "Words");
+            updateTableFromTemp(localDb, tempDb, "Translations");
+            updateTableFromTemp(localDb, tempDb, "UserWordStatus");
+
+            // Удаление записей из старой базы данных, которых нет в новой
+            deleteMissingRecords(localDb, tempDb, "Levels", "id");
+            deleteMissingRecords(localDb, tempDb, "Words", "id");
+            deleteMissingRecords(localDb, tempDb, "Translations", "id");
+            deleteMissingRecords(localDb, tempDb, "UserWordStatus", "word_id");
+
+            // Закрытие временной базы данных
+            tempDb.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteMissingRecords(SQLiteDatabase localDb, SQLiteDatabase tempDb, String tableName, String idColumnName) {
+        // Получаем все id из временной базы данных
+        Cursor tempCursor = tempDb.rawQuery("SELECT " + idColumnName + " FROM " + tableName, null);
+        StringBuilder idsInTemp = new StringBuilder();
+
+        while (tempCursor.moveToNext()) {
+            int id = tempCursor.getInt(0);
+            if (idsInTemp.length() > 0) {
+                idsInTemp.append(",");
+            }
+            idsInTemp.append(id);
+        }
+        tempCursor.close();
+
+        // Если временная таблица не пустая, удаляем отсутствующие записи
+        if (idsInTemp.length() > 0) {
+            localDb.execSQL("DELETE FROM " + tableName + " WHERE " + idColumnName + " NOT IN (" + idsInTemp.toString() + ")");
+        }
+    }
+
+    private void updateTableFromTemp(SQLiteDatabase localDb, SQLiteDatabase tempDb, String tableName) {
+        Cursor newCursor = tempDb.rawQuery("SELECT * FROM " + tableName, null);
+        while (newCursor.moveToNext()) {
+            int id = newCursor.getInt(newCursor.getColumnIndex("id"));
+
+            // Проверка, существует ли уже запись
+            Cursor existingCursor = localDb.rawQuery("SELECT * FROM " + tableName + " WHERE id = ?", new String[]{String.valueOf(id)});
+            if (existingCursor.getCount() == 0) {
+                // Если записи нет, добавляем ее
+                ContentValues values = new ContentValues();
+                for (int i = 0; i < newCursor.getColumnCount(); i++) {
+                    String columnName = newCursor.getColumnName(i);
+
+                    // Проверка типа данных
+                    if (newCursor.getType(i) == Cursor.FIELD_TYPE_BLOB) {
+                        // Обработка поля типа BLOB
+                        byte[] blobData = newCursor.getBlob(i);
+                        values.put(columnName, blobData);
+                    } else {
+                        // Обработка всех остальных типов как строк
+                        values.put(columnName, newCursor.getString(i));
+                    }
+                }
+                localDb.insert(tableName, null, values);
+            }
+            existingCursor.close();
+        }
+        newCursor.close();
+    }
+
+
+
+    private void copyDatabaseToTemp(String tempDatabasePath) throws IOException {
+        InputStream input = context.getAssets().open(DATABASE_NAME);
+        OutputStream output = new FileOutputStream(tempDatabasePath);
+
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = input.read(buffer)) > 0) {
+            output.write(buffer, 0, length);
+        }
+
+        output.flush();
+        output.close();
+        input.close();
+    }
+
+
     private boolean checkDatabase() {
         SQLiteDatabase checkDb = null;
         try {
@@ -139,6 +253,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new Object[]{1, wordId, knows ? 1 : 0});
     }
 
+
     public Cursor getWordTranslations(int wordId) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM Translations WHERE word_id = ?", new String[]{String.valueOf(wordId)});
@@ -173,4 +288,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "ORDER BY RANDOM() LIMIT ?",
                 new String[]{String.valueOf(levelId), String.valueOf(limit)});
     }
+
+    public Cursor getUnknownWords(int levelId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Используем параметризованный запрос для безопасности
+        String query = "SELECT * FROM Words WHERE level_id = ? AND id NOT IN (SELECT word_id FROM UserWordStatus WHERE knows = 1)";
+        return db.rawQuery(query, new String[]{String.valueOf(levelId)});
+    }
+
+    public void updateWord(int wordId, String newWord) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE Words SET word = ? WHERE id = ?", new Object[]{newWord, wordId});
+        db.close();
+    }
+
 }

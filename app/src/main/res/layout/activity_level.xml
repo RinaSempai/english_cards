@@ -6,5 +6,38 @@
     <ListView
         android:id="@+id/listViewWords"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonLayout"
+        android:backgroundTint="#B31C1C" />
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/buttonMarkUnknown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#F44336"
+            android:text="Отметить всё как неизвестные"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/buttonMarkKnown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#4CAF50"
+            android:text="Отметить всё как известные"
+            android:textColorLink="#EB2B2B"
+            android:textSize="12sp" />
+    </LinearLayout>
 </RelativeLayout>

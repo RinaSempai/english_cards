@@ -39,6 +39,8 @@ public class WordDetailActivity extends AppCompatActivity {
         Button buttonAddTranslation = findViewById(R.id.buttonAddTranslation);
         Button buttonDeleteWord = findViewById(R.id.buttonDeleteWord);
         ImageButton buttonPlayAudio = findViewById(R.id.buttonPlayAudio); // Audio button
+        Button buttonEditWord = findViewById(R.id.buttonEditWord); // Предположим, что у вас есть кнопка редактирования слова
+        buttonEditWord.setOnClickListener(v -> showEditWordDialog(textViewWord.getText().toString()));
 
         wordId = getIntent().getIntExtra("WORD_ID", -1);
 
@@ -62,6 +64,32 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showEditWordDialog(String currentWord) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Редактирование слова");
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_word, null);
+        EditText editTextWord = view.findViewById(R.id.editTextWord);
+        editTextWord.setText(currentWord);
+
+        builder.setView(view);
+
+        builder.setPositiveButton("Сохранить", (dialog, which) -> {
+            String newWord = editTextWord.getText().toString();
+            updateWord(newWord);
+        });
+
+        builder.setNegativeButton("Отмена", null);
+        builder.show();
+    }
+
+    private void updateWord(String newWord) {
+        dbHelper.updateWord(wordId, newWord);
+        loadWordDetails(); // Обновляем отображение слова
+        Toast.makeText(this, "Слово обновлено", Toast.LENGTH_SHORT).show();
+    }
+
 
     private void showDeleteWordConfirmationDialog() {
         new AlertDialog.Builder(this)

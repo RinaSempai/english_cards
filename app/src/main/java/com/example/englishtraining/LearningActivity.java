@@ -81,7 +81,13 @@ public class LearningActivity extends AppCompatActivity {
     }
 
     private void loadWords(int levelId, String wordsType, int numberOfWords) {
-        Cursor cursor = dbHelper.getWords(levelId);
+        Cursor cursor;
+        if ("Unknown Words".equals(wordsType)) {
+            cursor = dbHelper.getUnknownWords(levelId); // Получаем только неизвестные слова
+        } else {
+            cursor = dbHelper.getWords(levelId); // Получаем все слова
+        }
+
         wordsList = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
@@ -108,6 +114,7 @@ public class LearningActivity extends AppCompatActivity {
             wordsList = wordsList.subList(0, numberOfWords);
         }
     }
+
 
     private void startLearning() {
         startTime = SystemClock.uptimeMillis();
@@ -165,7 +172,7 @@ public class LearningActivity extends AppCompatActivity {
         Word currentWord = wordsList.get(currentWordIndex);
         String userAnswer = editTextUserAnswer.getText().toString().trim();
 
-        if (userAnswer.equalsIgnoreCase(currentWord.getWord())) {
+        if (userAnswer.equalsIgnoreCase(currentWord.getWord().trim())) {
             textViewFeedback.setText("Верно! " + currentWord.getUsageExample());
             correctAnswers++;
             // Mark the word as known in the database

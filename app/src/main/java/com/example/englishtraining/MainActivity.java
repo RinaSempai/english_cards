@@ -35,9 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
+
         try {
             dbHelper.createDatabase();
             dbHelper.openDatabase();
+            dbHelper.updateDatabase();
         } catch (IOException e) {
             throw new Error("Unable to create database");
         }
